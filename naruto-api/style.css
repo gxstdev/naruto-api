@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Teko:wght@300..700&display=swap');
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-color: #f9f9f9;
+}
+
+header, main{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-items: center;
+    
+}
+
+#titleContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    background-color: #000000;
+    width: 100%;
+    font-family: "Bungee Spice", sans-serif;
+}
+
+#logo{
+    width: 4em;
+    height: 4em;
+}
+
+#bgHeader{
+    width: 600px;
+    height:400px;
+    border-radius: 20px;
+}
+
+#searchCharacter{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+#label{
+    font-size: 2rem;
+    font-family: "Bungee Spice", sans-serif;
+    background-color: black;
+    padding: 15px;
+}
+#inputContainer{
+    display: flex;
+    justify-content: space-between;
+}
+
+#inputName{
+    height: 70px;
+    width: 650px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-family: "Teko", sans-serif;
+}
+#btnSearch{
+    padding: 15px;
+}
+#resultCharacter{
+    display: flex;
+    /* gap: 20px; */
+    justify-content: center;
+}
+#characterContainer{
+    display: flex;
+    gap: 15px;
+}
+#btnContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+}
+.btn{
+    background-color: black;
+    font-family: "Bungee Spice", sans-serif;
+    cursor: pointer;
+    transition: 1s;
+    padding: 2px;
+}
+.btn:hover{
+    background-color: rgb(255, 217, 168);
+}
+.btnAdd{
+    background-color: rgb(255, 217, 168);
+    padding: 15px;
+    font-family: "Bungee Spice", sans-serif;
+    cursor: pointer;
+    transition: 1s;
+    border-radius: 15px;
+}
+.btnRemove{
+    background-color: rgb(183, 183, 183);
+    padding: 15px;
+    font-family: "Bungee Spice", sans-serif;
+    cursor: pointer;
+    transition: 1s;
+    border-radius: 15px;
+}
+.btnAdd:hover{
+    background-color: rgb(166, 233, 166);
+}
+.characterResultContainer{
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 20px;
+    padding: 5px;
+    box-shadow: 1px 1px 9px 3px rgba(0, 0, 0, 0.489)
+}
+.characterImg{
+    width: 450px;
+    height: 300px;
+}
+.listCharacterImg{
+    width: 100px;
+    height: 100px;
+}
+#listCharacters{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+}
+#characterAtributtes{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-family: "Teko", sans-serif;
+    letter-spacing: 2px;
+}
+.btnContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+#mainContainer{
+    gap: 80px;
+}
