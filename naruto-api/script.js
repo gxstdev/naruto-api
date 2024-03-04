@@ -4,24 +4,33 @@ const resultCharacter = document.getElementById('resultCharacter')
 const listCharacters = document.querySelector('#listCharacters')
 
 let arrayCharacters = []
-
 const arrayCharactersLocalStorage = JSON.parse(localStorage.getItem('array'))
-
 if (arrayCharactersLocalStorage) {
     arrayCharacters = arrayCharactersLocalStorage
 }
 
 const getJsonResponse = async (url) => {
-    const response = await fetch(url)
-    try {
-        const jsonResponse = await response.json()
-        return jsonResponse
-        
-    } catch (error) {
-        if (response.status === 404) {
-           alert('Personagem não encontrado!')   
-        } 
-    }
+        try {
+            const response = await fetch(url)
+            if (response.status === 404) {
+                throw new Error('Personagem não encontrado!\n' +
+                'Por favor, digite o nome completo do personagem novamente!')
+            }   
+            if (response.status === 400) {
+                throw new Error('Por favor, insira um nome de personagem!')
+            }
+            if (response.status >= 500) {
+                throw new Error('Serviço indisponível! Por favor, tente mais tarde!')
+            }
+            const jsonResponse = await response.json()
+            return jsonResponse
+            
+        } catch (error) { 
+            if(error.message === 'Failed to fetch'){
+              return alert('Sem conexão a internet!')  
+            }
+            return alert(error.message)
+        }
 }
 
 const getCharacterObject = async (characterName) => {
@@ -86,12 +95,21 @@ const createContainerCharacter = (object) => {
     characterAtributtes.appendChild(spanBirthday)
     characterAtributtes.appendChild(birthday)
 
+    const spanSex = document.createElement('span')
+    spanSex.innerHTML = '<strong>Sexo: </strong>'
+    const sex = document.createElement('p')
+    sex.innerHTML = object.personal.sex
+    characterAtributtes.appendChild(spanSex)
+    characterAtributtes.appendChild(sex)
+
     const spanClan = document.createElement('span')
     spanClan.innerHTML = '<strong>Clã: </strong>'
     const clan = document.createElement('p')
-    clan.innerHTML = object.personal.clan
-    characterAtributtes.appendChild(spanClan)
-    characterAtributtes.appendChild(clan)   
+    if (object.personal.clan) {
+        clan.innerHTML = object.personal.clan
+        characterAtributtes.appendChild(spanClan)
+        characterAtributtes.appendChild(clan)  
+    }
 
     const btnAdd = document.createElement('button')
     btnAdd.textContent = 'Adicionar'
@@ -99,21 +117,19 @@ const createContainerCharacter = (object) => {
     btnContainer.appendChild(btnAdd)
 
     btnAdd.addEventListener('click', () => {
-        if(arrayCharacters.length >= 1){
-           const character = arrayCharacters.find(element => element.id == object.id)
-           if(character){
-                alert('Personagem já foi adicionado a lista!')
-           }else{
-                arrayCharacters.push(object)
-                localStorage.setItem('array', JSON.stringify(arrayCharacters))
-                addToList()  
-           }  
+        const character = arrayCharacters.find(element => element.id == object.id)
+        if (character) {
+            alert('Personagem já foi adicionado à lista!')
         }else{
             arrayCharacters.push(object)
             localStorage.setItem('array', JSON.stringify(arrayCharacters))
-            addToList()  
-        } 
-    })
+            addToList()
+            setTimeout(() => {
+              alert('Personagem adicionado à lista com sucesso!')  
+            }, 100)
+            
+        }
+     })
   
 }
 const showResultCharacter = async (characterName) => {
@@ -122,16 +138,16 @@ const showResultCharacter = async (characterName) => {
             if (object.status !== 404) {
                 createContainerCharacter(object)
             }
-        }catch(error){
+    }catch(error){
     
-        } 
+    } 
 }
 
 const addToList = () => {
     listCharacters.innerHTML = ''
     const getArrayLocalStorage = JSON.parse(localStorage.getItem('array')) 
         try{
-        getArrayLocalStorage.forEach(object => {
+            getArrayLocalStorage.forEach(object => {
             const characterContainer = document.createElement('div')
             characterContainer.setAttribute('class', 'characterContainer')
         
@@ -187,13 +203,22 @@ const addToList = () => {
             birthday.innerHTML = object.personal.birthdate
             characterAtributtes.appendChild(spanBirthday)
             characterAtributtes.appendChild(birthday)
+
+            const spanSex = document.createElement('span')
+            spanSex.innerHTML = '<strong>Sexo: </strong>'
+            const sex = document.createElement('p')
+            sex.innerHTML = object.personal.sex
+            characterAtributtes.appendChild(spanSex)
+            characterAtributtes.appendChild(sex)
         
             const spanClan = document.createElement('span')
             spanClan.innerHTML = '<strong>Clã: </strong>'
             const clan = document.createElement('p')
-            clan.innerHTML = object.personal.clan
-            characterAtributtes.appendChild(spanClan)
-            characterAtributtes.appendChild(clan)   
+            if (object.personal.clan) {
+                clan.innerHTML = object.personal.clan
+                characterAtributtes.appendChild(spanClan)
+                characterAtributtes.appendChild(clan)  
+            }
         
             const btnRemove = document.createElement('button')
             btnRemove.textContent = 'Remover'
@@ -202,13 +227,16 @@ const addToList = () => {
             
             btnRemove.addEventListener('click', () => {
                 removeCharacter(object)
+                setTimeout(() => {
+                    alert('Personagem removido com sucesso!')
+                }, 100)
+                
             })
             listCharacters.appendChild(div)
         });
     }catch(error){
 
     }
-
 }
 
 const removeCharacter = (object) => {
@@ -217,7 +245,7 @@ const removeCharacter = (object) => {
     
     arrayCharacters.forEach(element => {
         if (element.id == object.id) {
-           arrayCharacters.splice(element, 1) 
+           arrayCharacters.splice(arrayCharacters.indexOf(element), 1) 
            localStorage.setItem('array', JSON.stringify(arrayCharacters))
         }
     })
@@ -227,7 +255,7 @@ const removeCharacter = (object) => {
 btnSearch.addEventListener('click', () => {
     resultCharacter.innerHTML = ''
     showResultCharacter(inputName.value)
-    
+    inputName.value = ''
 })
 
 addToList()
